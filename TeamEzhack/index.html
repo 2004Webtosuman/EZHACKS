@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Recipe Finder</title>
+    <link rel="stylesheet" href="Style/styles.css">
+    <script src="Script/script.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <style>
+      /* Styling for the recipe details popup */
+      .recipe-detail ul {
+            list-style-type: none; 
+            padding: 0;
+            margin: 0; 
+        }
+        .recipe-detail ul li{
+            margin-bottom: 8px;
+        }
+        .recipe-detail {
+            display: none;
+            position: fixed;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -30%);
+            background-color: burlywood;
+            border-radius: 12px;
+            width: 40%;
+            height: 60%;
+            font-size: 20px;
+            overflow-y: scroll;
+            padding: 1em;
+            z-index: 1000; /* Ensures it appears above other content */
+        }
+        .recipe-close {
+            background: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .features-section {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #f9f9f9;
+}
+
+.features-section h2 {
+    font-size: 2.25rem;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.features-section .highlight {
+    color: #2ecc71; 
+    font-weight: bold;
+}
+
+.features-container {
+    display: flex;
+    justify-content: center; 
+    gap: 20px; 
+    flex-wrap: wrap; 
+}
+
+.feature-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px; 
+    padding: 20px;
+    max-width: 350px; 
+    flex:1 1 calc(33.333% - 20px); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.4s ease, box-shadow 0.4s ease, background-color 0.4s ease, border-color 0.4s ease;
+    margin-bottom: 20px;
+    overflow: hidden; 
+    position: relative; 
+}
+
+.feature-card:hover {
+    transform: scale(1.05); 
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    background-color: #f0f9f0; 
+    border-color: #2ecc71; 
+}
+
+.feature-icon {
+    width: 100%; 
+    height: 200px; 
+    margin-bottom: 15px; 
+    overflow: hidden; 
+    position: relative; 
+    border-radius: 8px; 
+}
+
+.feature-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    transition: transform 0.4s ease;
+}
+
+.feature-card:hover .feature-icon img {
+    transform: scale(1.1); 
+}
+
+.feature-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.feature-card p {
+    font-size: 1rem; 
+    margin-bottom: 20px;
+    color: #666;
+}
+
+.feature-card .read-more {
+    text-decoration: none;
+    color: #fff;
+    background-color: #2ecc71;
+    font-weight: bold;
+    border: 1px solid #2ecc71;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.4s ease, color 0.4s ease, transform 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card .read-more::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300%;
+    height: 300%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(-30deg);
+    transition: opacity 0.4s ease;
+    opacity: 0;
+}
+
+.feature-card .read-more:hover::before {
+    opacity: 1;
+}
+
+.feature-card .read-more:hover {
+    background-color: #27ae60; 
+    color: #fff;
+    transform: translateY(-3px); 
+}
+
+/* .....  */
+.special-food-heading {
+    font-size: 2rem; /* Base font size */
+    color: #333; /* Dark gray text color */
+    text-align: center; /* Center the text */
+    padding: 10px;
+    margin: 20px 0;
+    background-color: #f8f8f8; /* Light gray background */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin-top: 3rem;
+    margin-bottom: -2rem;
+}
+.special-food-heading span{
+    color: rgb(49, 131, 49);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .special-food-heading {
+        font-size: 1.5rem; /* Slightly smaller font on medium screens */
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .special-food-heading {
+        font-size: 1.2rem; /* Smaller font on small screens */
+        padding: 6px;
+        margin: 15px 0;
+    }
+}
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <div class="logo">Recipe Finder</div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="nav-links">
+                <li><a class="active" href="index.html">Home</a></li>
+                <li><a href="#feature">Features</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </div>
+    </header>
+   
+    <div class="bg">
+        <div class="background-picture">
+            <div class="search-container">
+                <input type="text" id="search-input" class="search-box" placeholder="Hunting..">
+                <br>
+                <button id="search-icon" class="btn-hover color-8">Search</button>
+            </div>
+        </div>
+    </div>
+  <!-- this is about receie detail  -->
+  <div class="recipe-detail">
+    <button class="recipe-close">
+        <i class="fa fa-times"></i>
+    </button>
+    <div class="recipe-detail-container"></div>
+</div>
+
+<!-- ...  -->
+
+<h2 class="special-food-heading">Our <span>Special Food</span></h2>
+
+    <div class="card-container"  id="result-container">
+        <div class="card">
+            <img src="Photos/kheer.jpg" alt="A bowl of kheer">
+            <div class="card-content">
+                <h1>Kheer</h1>
+                <span><button class="kher-btn">View Details</button><button><a class="btnanchor" href="https://youtu.be/riToqi_sAFA?si=3woAgUCEZqQDdNed">Tutorial</a></button></span>
+            </div>
+        </div>
+        <div class="card">
+            <img src="Photos/dhido.jpg" alt="A plate of dhido">
+            <div class="card-content">
+                <h1>Dhido</h1>
+                <span><button class="dhido-btn">View Details</button><button><a href="https://youtu.be/f8VWrerExV8?si=xRYndrIVU2c0_P5T">Tutorial</a></button></span>
+            </div>
+        </div>
+        <div class="card">
+            <img src="Photos/sekuwa.png" alt="A serving of sekuwa">
+            <div class="card-content">
+                <h1>Sekuwa</h1>
+                <span><button class="sekuwa-btn">View Details</button><button><a href="https://youtu.be/VzaxYk_EBFs?si=oZJiLbi43SQ2s9xc">Tutorial</a></button></span>
+            </div>
+        </div>
+        <div class="card">
+            <img src="Photos/yomari.jpg" alt="A plate of yomari">
+            <div class="card-content">
+                <h1>Yomari</h1>
+                <span><button class="yomari-btn">View Details</button><button><a href="https://youtu.be/lW1I4eJK3Fk?si=ra_5RKmCvOPM2Cs1">Tutorial</a></button></span>
+            </div>
+        </div>
+        <div class="card">
+            <img src="Photos/dhirkis.jpg" alt="A serving of dhirki">
+            <div class="card-content">
+                <h1>Dhirki</h1>
+                <span><button class="dhirki-btn">View Details</button><button><a href="https://youtu.be/mwPiv83eFsM?si=M5qlEoH-eGcg4Pwx">Tutorial</a></button></span>
+            </div>
+        </div>
+        <div class="card">
+            <img src="Photos/selroti.jpg" alt="A serving of sekuwa">
+            <div class="card-content">
+                <h1>Selroti</h1>
+                <span><button class="belroti-btn">View Details</button><button><a href="https://youtu.be/DFfIZw-XXGQ?si=aIIJT-3lo-ZuPjIT">Tutorial</a></button></span>
+            </div>
+        </div>
+        <div class="card">
+            <img src="Photos/loopse.jpg" alt="A serving of sekuwa">
+            <div class="card-content">
+                <h1>Lopsi Achar</h1>
+                <span><button class="lopsi-btn">View Details</button><button><a href="https://youtu.be/aqWU5ryckKo?si=PN2OQYLI-eqa4zCG">Tutorial</a></button></span>
+            </div>
+        </div>
+        <div class="card">
+            <img src="Photos/dalvat.jpg" alt="A serving of sekuwa">
+            <div class="card-content">
+                <h1>Dal Bhat</h1>
+                <span><button class="dalbat-btn">View Details</button><button><a href="https://youtu.be/-1C_CpY3ywY?si=a5J_G1uG2PZxiPlx">Tutorial</a></button></span>
+            </div>
+        </div>
+    </div>
+    <section>
+        <div class="features-section" id="feature">
+            <h2>Our <span class="highlight">Features</span></h2>
+            <div class="features-container">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="Photos/tradition.jpg">
+                    </div>
+                    <h3>Authentic Nepali Food Recipe</h3>
+                    <p>Nepali food is a reflection of the country's rich cultural tapestry and its deep connection to the land. Every dish tells a story, not just of ingredients and flavors but of traditions passed down through generations. From the vibrant streets of Kathmandu to the serene hills of Pokhara, the aromas of spices, herbs, and fresh produce fill the air, inviting everyone to gather around the table.</p>
+                    
+                </div>
+        
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="Photos/culture.jpg">
+                    </div>
+                    <h3>Promoting Nepali Culture</h3>
+                    <p>Recipes are a gateway to understanding and preserving Nepali culture. By cooking and sharing traditional dishes, we keep the rich heritage of Nepal alive, passing down stories, rituals, and customs through generations. Each recipe on our site not only teaches you how to cook but also connects you with the cultural significance of the dish, making every meal a celebration of Nepali identity.</p>
+                   
+                </div>
+        
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="Photos/api.jpg" >
+                    </div>
+                    <h3>
+                        
+                        API-Powered Global Recipe Search</h3>
+                    <p>This feature fetches and showcases a diverse selection of international recipes using an API, bringing the world’s cuisines to your fingertips. Whether you're craving Italian pasta, Japanese sushi, or Mexican tacos, the API-powered search provides quick and easy access to a vast array of global dishes. With detailed ingredients, cooking instructions, and cultural insights, this feature ensures that users can explore and recreate authentic international flavors in their own kitchens.
+    
+    
+    
+    
+    
+    
+                    </p>
+                  
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <h2>Contact Us</h2>
+        <p>Email: newarsantanu12@gmail.com</p>
+        <p>Phone: +977 976 7890 789</p>
+        <div class="social-links">
+            <a href="https://www.facebook.com" target="_blank">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://www.instagram.com" target="_blank">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.linkedin.com" target="_blank">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+        </div>
+        <p>&copy; 2024. All rights reserved.</p>
+    </footer>
+</body>
+</html>
